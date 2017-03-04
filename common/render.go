@@ -158,6 +158,23 @@ func (rs *RenderSystem) Add(basic *ecs.BasicEntity, render *RenderComponent, spa
 	rs.sortingNeeded = true
 }
 
+func (rs *RenderSystem) RemoveAndCheck(basic ecs.BasicEntity) bool {
+	var delete int = -1
+	for index, entity := range rs.entities {
+		if entity.ID() == basic.ID() {
+			delete = index
+			break
+		}
+	}
+	if delete >= 0 {
+		rs.entities = append(rs.entities[:delete], rs.entities[delete+1:]...)
+		rs.sortingNeeded = true
+		return true
+	}
+
+	return false
+}
+
 func (rs *RenderSystem) Remove(basic ecs.BasicEntity) {
 	var delete int = -1
 	for index, entity := range rs.entities {
